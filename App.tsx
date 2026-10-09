@@ -54,11 +54,13 @@ export default function App() {
           const daily = data.daily;
           const formattedData = daily.time.map(
             (date: string, index: number) => {
-              const d = new Date(date)
+              const d = new Date(date);
               // Format: "Friday, 9/11"
-              const dayName = d.toLocaleDateString("en-US", { weekday: "long" })
-              const month = d.getMonth() + 1
-              const day = d.getDate()
+              const dayName = d.toLocaleDateString("en-US", {
+                weekday: "long",
+              });
+              const month = d.getMonth() + 1;
+              const day = d.getDate();
               return {
                 id: index.toString(),
                 date: `${dayName}, ${month}/${day}`,
@@ -89,7 +91,7 @@ export default function App() {
             <View style={styles.card}>
               <Text style={styles.cardDate}>{item.date}</Text>
               <Text style={styles.cardTemp}>
-               Min {item.min}°C / Max {item.max}°C
+                Min {item.min}°C / Max {item.max}°C
               </Text>
             </View>
           )}
