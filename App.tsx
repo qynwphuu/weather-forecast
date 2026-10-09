@@ -53,11 +53,19 @@ export default function App() {
         .then((data) => {
           const daily = data.daily;
           const formattedData = daily.time.map(
-            (date: string, index: number) => ({
-              date,
-              min: daily.temperature_2m_min[index],
-              max: daily.temperature_2m_max[index],
-            }),
+            (date: string, index: number) => {
+              const d = new Date(date)
+              // Format: "Friday, 9/11"
+              const dayName = d.toLocaleDateString("en-US", { weekday: "long" })
+              const month = d.getMonth() + 1
+              const day = d.getDate()
+              return {
+                id: index.toString(),
+                date: `${dayName}, ${month}/${day}`,
+                min: daily.temperature_2m_min[index],
+                max: daily.temperature_2m_max[index],
+              };
+            },
           );
           setForecast(formattedData);
         })
@@ -69,8 +77,11 @@ export default function App() {
   return (
     <SafeAreaProvider style={styles.container}>
       <SafeAreaView>
-        <Text>Weather Forecast</Text>
-        <Text>{city}</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>Weather forecast</Text>
+          <Text style={styles.city}>{city}</Text>
+        </View>
+
         <FlatList
           data={forecast}
           keyExtractor={(item) => item.id}
@@ -78,7 +89,7 @@ export default function App() {
             <View style={styles.card}>
               <Text style={styles.cardDate}>{item.date}</Text>
               <Text style={styles.cardTemp}>
-                {item.min}°C / {item.max}°C
+               Min {item.min}°C / Max {item.max}°C
               </Text>
             </View>
           )}
@@ -92,36 +103,43 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f7f8fa",
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 10,
+  },
+  header: {
+    marginBottom: 15,
   },
   title: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "bold",
+    color: "#000",
   },
   city: {
     fontSize: 18,
     color: "#666",
-    marginBottom: 20,
+    marginTop: 4,
   },
   card: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
+    backgroundColor: "#ffffff",
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
     elevation: 2,
   },
   cardDate: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 6,
   },
   cardTemp: {
     fontSize: 16,
-    color: "#007AFF",
-    fontWeight: "bold",
+    color: "#333",
   },
 });
